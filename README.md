@@ -14,6 +14,7 @@ Cloud cover - cloudcover_mid
 See [open-meteo.com](https://open-meteo.com/en/docs#api-documentation).
 
 ## Project Resources
-Vuejs, Javascript framework for the frontend coding
-Vuetify for CSS preprocessing and styling 
-Axios to consume the API and give back a useful response to the user
+Vuejs, Javascript framework for the frontend coding<br>
+Vuetify for CSS preprocessing and styling<br>
+Axios to consume the API and give back a useful response to the user<br>
+Boxicon icons<br>
