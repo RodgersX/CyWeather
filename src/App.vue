@@ -17,7 +17,8 @@
           <v-text-field label="Longitude" color="green" v-model="longitude">
           </v-text-field>
           <v-btn
-            @click="getWeatherData"
+            @click.prevent="getWeatherData"
+            @keyup.enter="getWeatherData"
             block
             color="green darken-2"
             class="mt-6 white--text"
@@ -51,7 +52,7 @@
           </v-list-item>
         </v-list>
         <div class="sample-test">
-          {{ weather.hourly.time[i] }}
+          
         </div>
       </section>
     </v-main>
@@ -78,7 +79,7 @@ export default {
 
   filters: {
     dateFilter(val) {
-      return moment(String(val)).format("MM/DD/YYYY hh:mm");
+      return moment(String(val)).format("h A");
     },
   },
 
