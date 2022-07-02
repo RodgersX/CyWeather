@@ -11,7 +11,7 @@ Wind speed - windspeed_120m
 Cloud cover - cloudcover_mid
 
 ### API documentation
-See [Configuration Reference](https://open-meteo.com/en/docs#api-documentation).
+See [open-meteo.com](https://open-meteo.com/en/docs#api-documentation).
 
 ## Project Resources
 Vuejs, Javascript framework for the frontend coding
