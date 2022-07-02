@@ -30,7 +30,7 @@
 
       <section class="weather-data">
         <v-list class="">
-          <v-list-item v-for="(item, i) in weather" :key="i">
+          <v-list-item v-for="(item, i) in weather.hourly" :key="i">
             <v-list-item-content>
               <div class="d-flex align-center">
                 <h4>1PM</h4>
@@ -70,7 +70,8 @@ export default {
       latitude: "",
       longitude: "",
 
-      weather: null,
+      hourlyWeatherData: null,
+      hourlyUnits: null,
       temp: null,
       wind: null,
       cloudCover: null,
@@ -88,7 +89,8 @@ export default {
       const resp = await this.$http.get(
         `/v1/forecast?latitude=${this.latitude}&longitude=${this.longitude}&hourly=temperature_2m,relativehumidity_2m,cloudcover,windspeed_120m`
       );
-      this.weather = resp.data;
+      this.hourlyWeatherData = resp.data.hourly;
+      this.hourlyUnits=resp.data.hourly_units;
     },
   },
 };
