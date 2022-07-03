@@ -28,32 +28,54 @@
         </form>
       </section>
 
-      <section class="weather-data">
-        <v-list class="">
-          <v-list-item v-for="(item, i) in weather.hourly" :key="i">
-            <v-list-item-content>
-              <div class="d-flex align-center">
-                <h4>1PM</h4>
-                <h5 class="ml-4">21 &#8451;</h5>
-              </div>
-            </v-list-item-content>
-            <v-list-item-content>
-              <p class="grey--text">RealFeel &copy;</p>
-            </v-list-item-content>
-            <v-list-item-content>
-              <div class="d-flex align-start grey--text">
-                <i class="bx bx-droplet"></i>
-                <p class="mx-1">0%</p>
-                <v-btn icon>
-                  <i class="bx bx-chevron-down bx-sm"></i>
-                </v-btn>
-              </div>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-        <div class="sample-test">
-          
+      <section class="mb-11">
+        <div class="section-title text-center mb-5">
+          <h2>Today's Weather forecast</h2>
         </div>
+        <div class="d-flex weather-cards">
+          <v-card
+            tabindex="1"
+            color="green lighten-4"
+            class="weather-div text-center pa-1 d-flex justify-space-between"
+            v-for="(data, i) in alignedDataFromAllLists"
+            :key="i"
+          >
+            <div class="shown-details">
+              <p>{{ data.time | dateFilter }}</p>
+              <img
+                width="100px"
+                :src="require('./assets/weather.jpg')"
+                alt="weather-icon"
+              />
+              <p class="mt-2">{{ data.temperature }} &#8451;</p>
+            </div>
+
+            <div class="separator" style="width: 100px"></div>
+
+            <div class="hidden-details">
+              <v-list>
+                <v-list-item>
+                  <v-list-item-content>
+                    Windspeed: {{ data.windspeed }} km/h
+                  </v-list-item-content>
+                </v-list-item>
+                <v-divider></v-divider>
+                <v-list-item>
+                  <v-list-item-content>
+                    Humidity levels: {{ data.humidity }} %
+                  </v-list-item-content>
+                </v-list-item>
+                <v-divider></v-divider>
+                <v-list-item>
+                  <v-list-item-content>
+                    Cloud Cover: {{ data.cloudcover }} %
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </div>
+          </v-card>
+        </div>
+        <div class="more-details"></div>
       </section>
     </v-main>
   </v-app>
@@ -72,9 +94,6 @@ export default {
 
       hourlyWeatherData: null,
       hourlyUnits: null,
-      temp: null,
-      wind: null,
-      cloudCover: null,
     };
   },
 
@@ -84,13 +103,38 @@ export default {
     },
   },
 
+  computed: {
+    alignedDataFromAllLists() {
+      return this.hourlyWeatherData.time.map((time, i) => {
+        return {
+          time: time,
+          temperature: this.hourlyWeatherData.temperature_2m[i],
+          humidity: this.hourlyWeatherData.relativehumidity_2m[i],
+          windspeed: this.hourlyWeatherData.windspeed_120m[i],
+          cloudcover: this.hourlyWeatherData.cloudcover[i],
+        };
+      });
+    },
+  },
+
+  created() {
+    const resp = this.$http
+      .get(
+        `/v1/forecast?latitude=52.52&longitude=12.45&hourly=temperature_2m,relativehumidity_2m,cloudcover,windspeed_120m`
+      )
+      .then((result) => {
+        this.hourlyWeatherData = result.data.hourly;
+      })
+      .catch((err) => console.log(err.message));
+  },
+
   methods: {
     async getWeatherData() {
       const resp = await this.$http.get(
         `/v1/forecast?latitude=${this.latitude}&longitude=${this.longitude}&hourly=temperature_2m,relativehumidity_2m,cloudcover,windspeed_120m`
       );
-      this.hourlyWeatherData = resp.data.hourly;
-      this.hourlyUnits=resp.data.hourly_units;
+      // this.hourlyWeatherData = resp.data.hourly;
+      // this.hourlyUnits = resp.data.hourly_units;
     },
   },
 };
@@ -105,7 +149,16 @@ export default {
   border-radius: 10px
 
 .weather-data
-  background-color: red
-  width: 70%
+  width: 95%
   margin: 1rem auto
+  display: flex
+
+.weather-cards
+  overflow-x: scroll
+
+.v-card
+  margin: 0 10px
+
+.v-card:focus
+  width: 200px
 </style>
