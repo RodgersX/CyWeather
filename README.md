@@ -18,3 +18,4 @@ Vuejs, Javascript framework for the frontend coding<br>
 Vuetify for CSS preprocessing and styling<br>
 Axios to consume the API and give back a useful response to the user<br>
 Boxicon icons<br>
+Momentjs to format Date

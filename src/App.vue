@@ -29,6 +29,8 @@
           >
           </v-text-field>
           <v-btn
+            depressed
+            outlined
             @click.prevent="getWeatherData"
             @keyup.enter="getWeatherData"
             block
@@ -48,6 +50,7 @@
         <div class="section-title text-center white--text mb-5">
           <h2>Today's Weather Forecast</h2>
         </div>
+
         <v-layout row wrap class="weather-cards">
           <div
             width="300px"
@@ -107,7 +110,6 @@ export default {
       longitude: "",
 
       hourlyWeatherData: null,
-      hourlyUnits: null,
       alignedData: [],
     };
   },
@@ -116,17 +118,6 @@ export default {
     dateFilter(val) {
       return moment(String(val)).format("h A");
     },
-  },
-
-  async created() {
-    try {
-      const result = await this.$http.get(
-        `/v1/forecast?latitude=52.52&longitude=12.45&hourly=temperature_2m,relativehumidity_2m,cloudcover,windspeed_120m`
-      );
-      this.hourlyWeatherData = result.data.hourly;
-    } catch (e) {
-      console.log(e.message);
-    }
   },
 
   methods: {
@@ -139,51 +130,52 @@ export default {
             `/v1/forecast?latitude=${this.latitude}&longitude=${this.longitude}&hourly=temperature_2m,relativehumidity_2m,cloudcover,windspeed_120m`
           );
           this.hourlyWeatherData = resp.data.hourly;
-          this.hourlyUnits = resp.data.hourly_units;
-          this.groupAllData();
+          this.showOnlyTodaysWeatherData();
         }
       } catch (e) {
         console.log(e.message);
       }
     },
 
-    groupAllData() {
-      this.hourlyWeatherData.time.map((time, i) => {
-        this.alignedData.push({
-          time: time,
-          humidity: this.hourlyWeatherData.relativehumidity_2m[i],
-          windspeed: this.hourlyWeatherData.windspeed_120m[i],
-          temperature: this.hourlyWeatherData.temperature_2m[i],
-          cloudcover: this.hourlyWeatherData.cloudcover[i],
-        });
-      });
-    },
+    showOnlyTodaysWeatherData() {
+      let today = new Date().getDate();
 
-    isInRange(value, range) {
-      return value >= range[0] && value <= range[1];
+      this.hourlyWeatherData.time.map((time, i) => {
+        let timeRange = new Date(time).getHours();
+        let timeDate = new Date(time).getDate();
+        if (timeRange >= 6 && timeRange <= 18 && timeDate === today) {
+          this.alignedData.push({
+            time: time,
+            humidity: this.hourlyWeatherData.relativehumidity_2m[i],
+            windspeed: this.hourlyWeatherData.windspeed_120m[i],
+            temperature: this.hourlyWeatherData.temperature_2m[i],
+            cloudcover: this.hourlyWeatherData.cloudcover[i],
+          });
+        }
+      });
     },
   },
 };
 </script>
 
 <style lang="sass" scoped>
-  .header
-    height: 70px
-    display: flex
-    justify-content: space-between
-    align-items: center
-    padding: 0 16px
-    background-color: rgba(0, 0, 0, 0.7)
+.header
+  height: 70px
+  display: flex
+  justify-content: space-between
+  align-items: center
+  padding: 0 16px
+  background-color: rgba(0, 0, 0, 0.7)
 
-  .main-app
-    background-image: url("./assets/weather-bck.jpg")
-    background-size: cover
-    height: 100vh
+.main-app
+  background-image: url("./assets/weather-bck.jpg")
+  background-size: cover
+  height: 100vh
 
 .form-div
   width: 40%
   border: 1px solid grey
-  background-color: rgba(0, 0, 0, 0.6)
+  background-color: rgba(0, 0, 0, 0.3)
   color: white
   padding: 3rem
   border-radius: 10px
@@ -204,6 +196,4 @@ export default {
 
 .input-field
   color: white
-
-
 </style>
