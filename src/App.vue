@@ -30,7 +30,6 @@
           </v-text-field>
           <v-btn
             depressed
-            outlined
             @click.prevent="getWeatherData"
             @keyup.enter="getWeatherData"
             block
