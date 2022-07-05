@@ -5,11 +5,13 @@
         <h2 class="green--text">CyWeather</h2>
       </v-app-bar-title>
       <v-spacer />
-      <v-btn outlined color="green">About CyWeather</v-btn>
+      <v-btn outlined color="green" class="hidden-sm-and-down"
+        >About CyWeather</v-btn
+      >
     </header>
 
-    <main class="main-app d-flex justify-space-around pa-11">
-      <section class="form-div" style="height: 70vh">
+    <main class="main-app">
+      <section class="form-div">
         <h2 class="mb-10">
           Enter the longitude and Latitude to get the weather
         </h2>
@@ -41,58 +43,98 @@
         </form>
       </section>
 
-      <section
-        class="weather-data mb-11"
-        v-if="alignedData.length > 0"
-        style="width: 50%"
+      <div
+        v-show="alignedData.length === 0"
+        class="mt-11 text-center hidden-md-and-up"
       >
-        <div class="section-title text-center white--text mb-5">
-          <h2>Today's Weather Forecast</h2>
-        </div>
+        <i class="bx bx-data bx-lg grey--text"></i>
+      </div>
 
-        <v-layout row wrap class="weather-cards">
-          <div
-            width="300px"
-            class="weather-div text-center pa-1 d-flex justify-space-between"
-            v-for="(data, i) in alignedData"
-            :key="i"
-          >
-            <div class="shown-details">
-              <p>{{ data.time | dateFilter }}</p>
-              <img
-                width="100px"
-                :src="require('./assets/weather.jpg')"
-                alt="weather-icon"
-              />
-              <p class="mt-2">{{ data.temperature }} &#8451;</p>
-            </div>
-
-            <div class="separator" style="width: 100px" />
-
-            <div class="more-details d-flex align-center">
-              <v-list color="transparent">
-                <v-list-item>
-                  <v-list-item-content class="white--text">
-                    Windspeed: {{ data.windspeed }} km/h
-                  </v-list-item-content>
-                </v-list-item>
-                <v-divider></v-divider>
-                <v-list-item>
-                  <v-list-item-content class="white--text">
-                    Humidity levels: {{ data.humidity }} %
-                  </v-list-item-content>
-                </v-list-item>
-                <v-divider></v-divider>
-                <v-list-item>
-                  <v-list-item-content class="white--text">
-                    Cloud Cover: {{ data.cloudcover }} %
-                  </v-list-item-content>
-                </v-list-item>
+      <div class="expansion-panels-div">
+        <v-expansion-panels multiple>
+          <v-expansion-panel v-for="(data, i) in alignedData" :key="i">
+            <v-expansion-panel-header>
+              <template v-slot:default="{ open }">
+                <v-row no-gutters>
+                  <v-col cols="4">
+                    <h3>{{ data.time | dateFilter }}</h3>
+                  </v-col>
+                  <v-col cols="8" class="text--secondary">
+                    <v-fade-transition leave-absolute>
+                      <span v-if="open" key="0">Details</span>
+                      <span v-else key="1">
+                        <i class="bx bxs-thermometer"></i>
+                        Temperature: {{ data.temperature }}&#8451;
+                      </span>
+                    </v-fade-transition>
+                  </v-col>
+                </v-row>
+              </template>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-list dense>
+                <v-list-item-group>
+                  <v-list-item class="grey--text">
+                    <v-list-item-icon>
+                      <i class="bx bxs-thermometer bx-sm"></i>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>Temperature</v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-content>
+                      <v-list-item-title
+                        >{{ data.temperature }}&#8451;
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider />
+                  <v-list-item class="grey--text">
+                    <v-list-item-icon>
+                      <i class="bx bx-droplet bx-sm"></i>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>Humidity Levels</v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        {{ data.humidity }}%
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider />
+                  <v-list-item class="grey--text">
+                    <v-list-item-icon>
+                      <i class="bx bx-cloud bx-sm"></i>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>Cloud Covers</v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        {{ data.cloudcover }}%
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-divider />
+                  <v-list-item class="grey--text">
+                    <v-list-item-icon>
+                      <i class="bx bx-wind bx-sm"></i>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>Wind Speed </v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        {{ data.windspeed }}km/h
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list-item-group>
               </v-list>
-            </div>
-          </div>
-        </v-layout>
-      </section>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </div>
     </main>
   </v-app>
 </template>
@@ -131,6 +173,8 @@ export default {
           this.hourlyWeatherData = resp.data.hourly;
           this.showOnlyTodaysWeatherData();
         }
+        this.latitude = "";
+        this.longitude = "";
       } catch (e) {
         console.log(e.message);
       }
@@ -166,32 +210,25 @@ export default {
   padding: 0 16px
   background-color: rgba(0, 0, 0, 0.7)
 
-.main-app
-  background-image: url("./assets/weather-bck.jpg")
-  background-size: cover
-  height: 100vh
-
 .form-div
-  width: 40%
-  border: 1px solid grey
-  background-color: rgba(0, 0, 0, 0.3)
-  color: white
-  padding: 3rem
-  border-radius: 10px
+  text-align: center
+  @media screen and (max-width: 600px)
+    padding: 10px
+    margin-top: 1rem
 
-.weather-data
-  overflow-y: scroll
-  overflow-x: hidden
-  -ms-overflow-style: none
-  scrollbar-width: none
+  @media screen and (min-width: 900px)
+    width: 40%
+    margin: 3rem auto
 
-.weather-data::-webkit-scrollbar
-  display: none
+.expansion-panels-div
+  margin: 3rem auto
+  @media screen and (max-width: 600px)
+    padding: 10px
+    margin-top: 1rem
 
-.weather-div
-  background-color: rgba(208, 197, 203, 0.2)
-  margin: 6px
-  color: white
+  @media screen and (min-width: 900px)
+    width: 50%
+    margin: 3rem auto
 
 .input-field
   color: white
