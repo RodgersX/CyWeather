@@ -48,6 +48,7 @@
         class="mt-11 text-center hidden-md-and-up"
       >
         <i class="bx bx-data bx-lg grey--text"></i>
+        <h3 class="grey--text">Your data will appear here</h3>
       </div>
 
       <div class="expansion-panels-div">
